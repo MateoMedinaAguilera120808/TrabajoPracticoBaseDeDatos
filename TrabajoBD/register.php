@@ -1,43 +1,38 @@
 <?php
-// register.php
-// este archivo registra un nuevo usuario y inicia sesión automáticamente
-
 session_start();
-//se conecta a la base de datos
-require_once "../TrabajoPracticoBaseDeDatos/TrabajoBD/config/config.php";
-// verifica si se enviaron los datos del formulario
-if (isset($_POST["userName"], $_POST["userPassword"], $_POST["userEmail"])) {
-    // obtiene los datos del formulario
-    $userName = $_POST["userName"];
-    $userPassword = $_POST["userPassword"];
-    $userEmail = $_POST["userEmail"];
+require_once '../config/conexion.php';
 
-    // hace la consulta para verificar si el usuario o correo ya existen
-    $sql = "SELECT * FROM empresa WHERE NombreCliente = ? OR Correo = ?";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "ss", $userName, $userEmail);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    // si ya existe, devuelve un error
-    if (mysqli_num_rows($res) > 0) {
-        echo json_encode(["error" => true, "msj" => "El usuario o correo ya existe."]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombreCliente = trim($_POST['NombreCliente']);
+    $correo        = trim($_POST['Correo']);
+    $contrasena    = trim($_POST['Contrasena']);
+    $sector        = trim($_POST['Sector']);
+    $telefono      = trim($_POST['Telefono']);
+
+    if (empty($nombreCliente) || empty($correo) || empty($contrasena) || empty($sector) || empty($telefono)) {
+        die("Por favor completa todos los campos.");
+    }
+
+    // Verificar si el correo ya existe
+    $stmtCheck = $conexion->prepare("SELECT idCliente FROM empresa WHERE Correo = ?");
+    $stmtCheck->bind_param("s", $correo);
+    $stmtCheck->execute();
+    if ($stmtCheck->get_result()->num_rows > 0) {
+        die("El correo ingresado ya se encuentra registrado.");
+    }
+
+    // Encriptar la contraseña
+    $passHash = password_hash($contrasena, PASSWORD_BCRYPT);
+
+    // Insertar el nuevo registro en la base de datos
+    $stmt = $conexion->prepare("INSERT INTO empresa (NombreCliente, Correo, Contrasena, Sector, Telefono) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $nombreCliente, $correo, $passHash, $sector, $telefono);
+
+    if ($stmt->execute()) {
+        header("Location: login.php?registered=success");
         exit();
-    }
-
-    // hace la consulta para insertar el nuevo usuario
-    $sql = "INSERT INTO empresa (NombreCliente, Contrasena, Correo) VALUES (?, ?, ?)";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt, "sss", $userName, $userPassword, $userEmail);
-    if (mysqli_stmt_execute($stmt)) {
-        // inicia la sesión y guarda los datos del usuario en la sesión
-        $userId = mysqli_insert_id($con);
-        $_SESSION['NombreCliente'] = $userName;
-        $_SESSION['idCliente'] = $userId;
-        
-        echo json_encode(["success" => true, "msj" => "Registro exitoso."]);
     } else {
-        echo json_encode(["error" => true, "msj" => "Error al registrar usuario."]);
+        echo "Error al registrar: " . $conexion->error;
     }
-} else {
-    echo json_encode(["error" => true, "msj" => "Faltan datos."]);
 }
+?>
