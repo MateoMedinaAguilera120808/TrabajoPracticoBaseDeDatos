@@ -31,7 +31,7 @@
             <br>
 
             
-            <button type="submit" id="Registrar" class="buttonw">Crear cuenta</button>
+            <button type="submit" id="Registrar" class="button">Crear cuenta</button>
         </div>
     </form>
 

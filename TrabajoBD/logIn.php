@@ -4,7 +4,7 @@
 
 session_start();
 //se conecta a la base de datos
-require_once "config/config.php";
+require_once "../TrabajoPracticoBaseDeDatos/TrabajoBD/config/config.php";
 
 // verifica si se enviaron los datos del formulario
 if (isset($_POST["userName"]) && isset($_POST["userPassword"])) {
@@ -13,7 +13,7 @@ if (isset($_POST["userName"]) && isset($_POST["userPassword"])) {
     $userPassword = $_POST["userPassword"];
 
     //hace la consulta para obtener el usuario por nombre de usuario
-    $sql = "SELECT userId, userName, userPassword, userType, userImage FROM users WHERE userName = ?";
+    $sql = "SELECT idCliente, NombreCliente, Contrasena FROM empresa WHERE NombreCliente = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $userName);
     mysqli_stmt_execute($stmt);
@@ -27,8 +27,7 @@ if (isset($_POST["userName"]) && isset($_POST["userPassword"])) {
             //inicia la sesión y guarda los datos del usuario en la sesión
             $_SESSION['userName'] = $row['userName'];
             $_SESSION['userId'] = $row['userId'];
-            $_SESSION['userType'] = $row['userType'] ?? 'user';
-            $_SESSION['userImage'] = base64_encode($row['userImage']) ?? 'img/icono-imagen-perfil-predeterminado-alta-resolucion_852381-3658.jpg';
+            
 
             echo json_encode(["success" => true, "msj" => "Login exitoso."]);
         }
@@ -36,7 +35,7 @@ if (isset($_POST["userName"]) && isset($_POST["userPassword"])) {
     // si no se encontró el usuario por nombre de usuario, intenta con el email
     else{
     // hace la consulta para obtener el usuario por email
-    $sql = "SELECT userId, userName, userPassword, userType, userImage FROM users WHERE userEmail = ?";
+    $sql = "SELECT idCliente, NombreCliente, Contrasena FROM Empleados WHERE Correo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "s", $userName);
     mysqli_stmt_execute($stmt);
@@ -49,9 +48,7 @@ if (isset($_POST["userName"]) && isset($_POST["userPassword"])) {
             //inicia la sesión y guarda los datos del usuario en la sesión
             $_SESSION['userName'] = $row['userName'];
             $_SESSION['userId'] = $row['userId'];
-            $_SESSION['userType'] = $row['userType'] ?? 'user';
-            $_SESSION['userImage'] = base64_encode($row['userImage']) ?? 'img/icono-imagen-perfil-predeterminado-alta-resolucion_852381-3658.jpg';
-
+           
             echo json_encode(["success" => true, "msj" => "Login exitoso."]);
         }}else {
             echo json_encode(["error" => "incorrecto", "msj" => "Usuario o contraseña incorrectos."]);

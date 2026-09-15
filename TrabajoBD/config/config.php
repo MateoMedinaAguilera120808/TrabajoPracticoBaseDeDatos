@@ -2,7 +2,7 @@
 $server = "localhost";
 $user = "root";
 $pass = "";
-$bd = "myfoods";
+$bd = "trabajobd";
 
 $con = mysqli_connect($server, $user, $pass, $bd);
 if (!$con) {

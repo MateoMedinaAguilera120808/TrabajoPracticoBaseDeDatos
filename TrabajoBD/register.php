@@ -4,7 +4,7 @@
 
 session_start();
 //se conecta a la base de datos
-require_once "config/config.php";
+require_once "../TrabajoPracticoBaseDeDatos/TrabajoBD/config/config.php";
 // verifica si se enviaron los datos del formulario
 if (isset($_POST["userName"], $_POST["userPassword"], $_POST["userEmail"])) {
     // obtiene los datos del formulario
@@ -13,7 +13,7 @@ if (isset($_POST["userName"], $_POST["userPassword"], $_POST["userEmail"])) {
     $userEmail = $_POST["userEmail"];
 
     // hace la consulta para verificar si el usuario o correo ya existen
-    $sql = "SELECT * FROM users WHERE userName = ? OR userEmail = ?";
+    $sql = "SELECT * FROM empresa WHERE NombreCliente = ? OR Correo = ?";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $userName, $userEmail);
     mysqli_stmt_execute($stmt);
@@ -25,17 +25,15 @@ if (isset($_POST["userName"], $_POST["userPassword"], $_POST["userEmail"])) {
     }
 
     // hace la consulta para insertar el nuevo usuario
-    $sql = "INSERT INTO users (userName, userPassword, userEmail) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO empresa (NombreCliente, Contrasena, Correo) VALUES (?, ?, ?)";
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, "sss", $userName, $userPassword, $userEmail);
     if (mysqli_stmt_execute($stmt)) {
         // inicia la sesión y guarda los datos del usuario en la sesión
         $userId = mysqli_insert_id($con);
-        $_SESSION['userName'] = $userName;
-        $_SESSION['userId'] = $userId;
-        $_SESSION['userType'] = 'user';
-        $_SESSION['userImage'] = 'img/icono-imagen-perfil-predeterminado-alta-resolucion_852381-3658.jpg';
-
+        $_SESSION['NombreCliente'] = $userName;
+        $_SESSION['idCliente'] = $userId;
+        
         echo json_encode(["success" => true, "msj" => "Registro exitoso."]);
     } else {
         echo json_encode(["error" => true, "msj" => "Error al registrar usuario."]);
