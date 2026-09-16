@@ -14,9 +14,9 @@
 
         <form id="formLogin">
             <div class="login-form">
-            <p>Nombre de usuario</p>
-            <input type="text" name="userName" id="loginUserName" class="input" placeholder="Nombre de usuario" required
-                autocomplete="username" maxlength="20">
+            <p>Correo</p>
+            <input type="text" name="userName" id="loginUserName" class="input" placeholder="Correo" required
+                autocomplete="username" maxlength="255">
 
             <br>
 

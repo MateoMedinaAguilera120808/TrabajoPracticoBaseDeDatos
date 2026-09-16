@@ -10,23 +10,22 @@ if (!isset($_SESSION['idCliente'])) {
 
 $idCliente = $_SESSION['idCliente'];
 
-$sql = "SELECT c.NumPago AS idComprobante, 
-               f.idFactura, 
-               f.PrecioPagar AS Monto
-        FROM comprobante_de_pago c
-        INNER JOIN factura f ON c.idFactura = f.idFactura
-        WHERE c.idCliente = ?";
+$sql = "SELECT o.NumOrden, p.NombreProducto, o.CantProducto, o.FechaCompra 
+        FROM orden_de_compra o
+        INNER JOIN productos p ON o.IdProducto = p.IdProducto
+        WHERE o.idCliente = ?
+        ORDER BY o.NumOrden DESC";
 
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("i", $idCliente);
 $stmt->execute();
 $res = $stmt->get_result();
 
-$comprobantes = [];
+$pedidos = [];
 while ($row = $res->fetch_assoc()) {
-    $comprobantes[] = $row;
+    $pedidos[] = $row;
 }
 
-echo json_encode(['success' => true, 'data' => $comprobantes]);
+echo json_encode(['success' => true, 'data' => $pedidos]);
 exit();
 ?>

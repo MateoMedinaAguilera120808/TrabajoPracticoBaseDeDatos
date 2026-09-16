@@ -1,13 +1,19 @@
 <?php
 session_start();
-require_once '../config/conexion.php';
+header('Content-Type: application/json; charset=utf-8');
+
+require_once 'config/conexion.php';
+
+$response = ['success' => false, 'msj' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $correo     = trim($_POST['Correo']);
-    $contrasena = trim($_POST['Contrasena']);
+    $correo     = trim($_POST['userName'] ?? $_POST['Correo'] ?? '');
+    $contrasena = trim($_POST['userPassword'] ?? $_POST['Contrasena'] ?? '');
 
     if (empty($correo) || empty($contrasena)) {
-        die("Por favor completa ambos campos.");
+        $response['msj'] = 'Por favor completa ambos campos.';
+        echo json_encode($response);
+        exit();
     }
 
     $stmt = $conexion->prepare("SELECT idCliente, NombreCliente, Contrasena FROM empresa WHERE Correo = ?");
@@ -18,18 +24,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($resultado->num_rows === 1) {
         $usuario = $resultado->fetch_assoc();
 
-        // Verificar la contraseña codificada o en texto plano (en caso de migración previa)
         if (password_verify($contrasena, $usuario['Contrasena']) || $contrasena === $usuario['Contrasena']) {
             $_SESSION['idCliente']     = $usuario['idCliente'];
             $_SESSION['NombreCliente'] = $usuario['NombreCliente'];
 
-            header("Location: index.php");
-            exit();
+            $response['success'] = true;
+            $response['msj'] = 'Inicio de sesión exitoso.';
         } else {
-            echo "Contraseña incorrecta.";
+            $response['msj'] = 'Contraseña incorrecta.';
         }
     } else {
-        echo "No existe una cuenta registrada con este correo.";
+        $response['msj'] = 'No existe una cuenta registrada con este correo.';
     }
+} else {
+    $response['msj'] = 'Método no permitido.';
 }
+
+echo json_encode($response);
+exit();
 ?>

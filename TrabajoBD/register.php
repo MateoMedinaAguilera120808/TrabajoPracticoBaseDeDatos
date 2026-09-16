@@ -1,24 +1,35 @@
 <?php
 session_start();
-require_once '../config/conexion.php';
+header('Content-Type: application/json; charset=utf-8');
+
+// Ajusta la ruta a tu conexion según donde esté el archivo actual
+require_once 'config/conexion.php'; 
+
+$response = ['success' => false, 'msj' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombreCliente = trim($_POST['NombreCliente']);
-    $correo        = trim($_POST['Correo']);
-    $contrasena    = trim($_POST['Contrasena']);
-    $sector        = trim($_POST['Sector']);
-    $telefono      = trim($_POST['Telefono']);
+    // Acepta parámetros provenientes del JS o de formulario tradicional
+    $nombreCliente = trim($_POST['userName'] ?? $_POST['NombreCliente'] ?? '');
+    $correo        = trim($_POST['userEmail'] ?? $_POST['Correo'] ?? '');
+    $contrasena    = trim($_POST['userPassword'] ?? $_POST['Contrasena'] ?? '');
+    $sector        = trim($_POST['Sector'] ?? 'General');
+    $telefono      = trim($_POST['Telefono'] ?? '00000000');
 
-    if (empty($nombreCliente) || empty($correo) || empty($contrasena) || empty($sector) || empty($telefono)) {
-        die("Por favor completa todos los campos.");
+    if (empty($nombreCliente) || empty($correo) || empty($contrasena)) {
+        $response['msj'] = 'Por favor completa todos los campos requeridos.';
+        echo json_encode($response);
+        exit();
     }
 
     // Verificar si el correo ya existe
     $stmtCheck = $conexion->prepare("SELECT idCliente FROM empresa WHERE Correo = ?");
     $stmtCheck->bind_param("s", $correo);
     $stmtCheck->execute();
+    
     if ($stmtCheck->get_result()->num_rows > 0) {
-        die("El correo ingresado ya se encuentra registrado.");
+        $response['msj'] = 'El correo ingresado ya se encuentra registrado.';
+        echo json_encode($response);
+        exit();
     }
 
     // Encriptar la contraseña
@@ -29,10 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("sssss", $nombreCliente, $correo, $passHash, $sector, $telefono);
 
     if ($stmt->execute()) {
-        header("Location: login.php?registered=success");
-        exit();
+        $response['success'] = true;
+        $response['msj'] = '¡Usuario registrado con éxito!';
     } else {
-        echo "Error al registrar: " . $conexion->error;
+        $response['msj'] = 'Error al registrar: ' . $conexion->error;
     }
+} else {
+    $response['msj'] = 'Método de solicitud no permitido.';
 }
+
+echo json_encode($response);
+exit();
 ?>

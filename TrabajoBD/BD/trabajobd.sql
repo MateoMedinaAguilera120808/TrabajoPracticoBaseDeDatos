@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-09-2026 a las 01:01:07
+-- Tiempo de generación: 16-09-2026 a las 03:10:48
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -48,6 +48,13 @@ CREATE TABLE `empresa` (
   `Telefono` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `empresa`
+--
+
+INSERT INTO `empresa` (`idCliente`, `NombreCliente`, `Correo`, `Contrasena`, `Sector`, `Telefono`) VALUES
+(1, 'mateo', 'mateomedina08@gmail.com', '$2y$10$O/7Ax1YKDF4KKiqC1u74WuBw/Io59gO3DZAyjAazLaBRtROS5fhyq', 'General', '00000000');
+
 -- --------------------------------------------------------
 
 --
@@ -89,6 +96,17 @@ CREATE TABLE `productos` (
   `Stock` int(11) NOT NULL CHECK (`Stock` >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`IdProducto`, `NombreProducto`, `Precio`, `Stock`) VALUES
+(1, 'Teclado Mecánico RGB', 12500, 20),
+(2, 'Mouse Inalámbrico Pro', 8200.5, 15),
+(3, 'Monitor 24 FHD 75Hz', 95000, 10),
+(4, 'Auriculares Gamer 7.1', 18400, 8),
+(5, 'Pad Mouse XL Black', 3500, 30);
+
 -- --------------------------------------------------------
 
 --
@@ -100,6 +118,15 @@ CREATE TABLE `proveedores` (
   `NombreProveedor` varchar(100) NOT NULL,
   `DireccionProveedor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`idProveedor`, `NombreProveedor`, `DireccionProveedor`) VALUES
+(1, 'Distribuidora Tech SA', 0),
+(2, 'Logística Global SRL', 0),
+(3, 'Importadora del Sur', 0);
 
 --
 -- Índices para tablas volcadas
@@ -163,7 +190,7 @@ ALTER TABLE `comprobante_de_pago`
 -- AUTO_INCREMENT de la tabla `empresa`
 --
 ALTER TABLE `empresa`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
@@ -181,13 +208,13 @@ ALTER TABLE `orden_de_compra`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `IdProducto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `IdProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `idProveedor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idProveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
