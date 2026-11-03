@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['idCliente'])) {
-    header("Location: login.php");
+    header("Location: logIn.php");
     exit();
 }
 ?>
@@ -9,7 +9,9 @@ if (!isset($_SESSION['idCliente'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Facturas</title>
+    <link rel="stylesheet" href="../css/app.css">
 </head>
 <body>
 

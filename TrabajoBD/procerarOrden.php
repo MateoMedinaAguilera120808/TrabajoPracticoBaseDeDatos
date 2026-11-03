@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once '../config/conexion.php';
+require_once 'config/conexion.php';
 
 // Verificar que el usuario tenga sesión iniciada
 if (!isset($_SESSION['idCliente'])) {
-    header("Location: login.php");
+    header("Location: visual/logIn.php");
     exit();
 }
 

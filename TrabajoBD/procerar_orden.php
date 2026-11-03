@@ -4,7 +4,7 @@ require_once 'config/conexion.php';
 
 // Verificar sesión
 if (!isset($_SESSION['idCliente'])) {
-    header("Location: visual/login.php");
+    header("Location: visual/logIn.php");
     exit();
 }
 

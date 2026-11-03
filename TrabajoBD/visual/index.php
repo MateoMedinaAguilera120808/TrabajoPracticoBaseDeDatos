@@ -4,7 +4,7 @@ session_start();
 require_once '../config/conexion.php';
 
 if (!isset($_SESSION['idCliente'])) {
-    header("Location: login.php");
+    header("Location: logIn.php");
     exit();
 }
 
@@ -32,7 +32,9 @@ $facturasResult = $stmtFacturas->get_result();
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Compras</title>
+    <link rel="stylesheet" href="../css/app.css">
 </head>
 <body>
 
@@ -45,7 +47,7 @@ $facturasResult = $stmtFacturas->get_result();
 
     <h2>Nueva Orden de Compra</h2>
 
-    <form action="../procesar_orden.php" method="POST">
+    <form action="../procerar_orden.php" method="POST">
         <label for="idProducto">Producto (Precio Unitario):</label>
         <select name="idProducto" id="idProducto" required>
             <?php while ($prod = $productosResult->fetch_assoc()): ?>
